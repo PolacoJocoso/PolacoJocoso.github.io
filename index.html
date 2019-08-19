@@ -58,7 +58,7 @@ detectmob();
 
 function checkCookie() {
   var username = getCookie("jaAcessou");
-  if (username == "nao") {
+  if (username != "sim") {
    alert("Este site funciona melhor no computador");
    setCookie("username", "sim", 1);
   }
