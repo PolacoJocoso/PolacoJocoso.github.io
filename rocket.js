@@ -8,6 +8,9 @@
 // the only difference is that it has DNA & fitness
 
 //constructor
+
+  let ident;
+
 class Rocket {
   constructor(l, dna_) {
     // All of our physics stuff
@@ -34,7 +37,12 @@ class Rocket {
 
   // Run in relation to all the obstacles
   // If I'm stuck, don't bother updating or checking for intersection
-  run() {
+
+
+  run(ide) {
+
+    ident = ide;
+
     if(!this.hitTarget){
     this.checkTarget(); // Check to see if we've reached the target
     }
@@ -70,6 +78,7 @@ class Rocket {
     let r = this.r;
     stroke(0);
     push();
+    text(ident, this.position.x+5, this.position.y);
     translate(this.position.x, this.position.y);
     rotate(theta);
 
@@ -80,7 +89,13 @@ class Rocket {
     rect(r / 2, r * 2, r / 2, r);*/
 
     // Rocket body
-    fill(255);
+
+    if(ident == 0){
+      fill(1);
+    }else{
+    fill(cores[ident][0],cores[ident][1],cores[ident][2]);
+  }
+
     beginShape(TRIANGLES);
     vertex(0, -r * 2);
     vertex(-r, r * 2);

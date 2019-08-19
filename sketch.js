@@ -20,21 +20,32 @@ let population; // Population
 
 let lifeCounter; // Timer for cycle of generation
 
+let qtdDeFoguetes;
+
+let cores;
+
 let target; // Target position
 
 let info;
 
 let valor = 0;
 
+let melhorAdaptado = 0;
+
+let mutationRate = 0.01;
+
+let gens;
 
 function setup() {
   var canvasQueCriei = createCanvas(640, 360);
+  //var canvasQueCriei = createCanvas(1300, 487);
   canvasQueCriei.position(30, 100);
   // The number of cycles we will allow a generation to live
-  lifetime = height-150;
+  lifetime = height-150;//MUDEI DE 150 PARA 100
 
   // Initialize variables
   lifeCounter = 0;
+  qtdDeFoguetes = 50;
 
   target = createVector(width / 2, 24);
 
@@ -45,9 +56,12 @@ function setup() {
   sliderMutacao.position(pcMutacao.x+219, pcMutacao.y+19);
   sliderMutacao.style('background', 'blue');
 
+  //sliderQtd = createSlider(2, 50, 20, 1);
+  //sliderQtd.position(pcMutacao.x+280, pcMutacao.y+19);
+
   // Create a population with a mutation rate, and population max
-  let mutationRate = sliderMutacao.value();
-  population = new Population(mutationRate, 50);
+  mutationRate = sliderMutacao.value();
+  population = new Population(mutationRate, qtdDeFoguetes);
 
   //testes = createP("");
   //testes.html("VALOR: " + valor);
@@ -64,11 +78,22 @@ function setup() {
   //createDiv('<iframe id=\"ytplayer\" type=\"text/html\" width=\"640\" height=\"360\" src=\"https://www.youtube.com/watch?v=QH2-TGUlwu4?autoplay=1&origin=http://example.com\"frameborder=\"0\"></iframe>');
   video = createDiv('<iframe width="560" height="315" src="https://www.youtube.com/embed/QH2-TGUlwu4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
   video.position(675,145);
+
+
+  botao = createButton("bai");
+  botao.mousePressed();
+
+  cores = [];
+  for(var z = 0; z < qtdDeFoguetes; z++){
+    cores[z] = [random(0, 255),random(0, 255),random(0, 255)];
+
+  }
+
 }
 
 function draw() {
-  background(180);
-
+  //background(180);
+  clear();
   // Draw the start and target positions
   fill('red');
   stroke(0);
@@ -91,13 +116,15 @@ function draw() {
   fill(0);
 
   tituloPrincipal.html("Projeto EDVT - Agora vai");
-  pcMutacao.html("Razão de mutação: " + int(sliderMutacao.value()*100) + "%")
+  pcMutacao.html("Taxa de mutação: " + int(sliderMutacao.value()*100) + "%")
 
   info.html("Geração Nº " + population.getGenerations() + "<br>" + "Passos restantes: " + (lifetime - lifeCounter)
-  + "<br>" + "Quantos acertaram o alvo: " + valor );
+  + "<br>" + "Quantos acertaram o alvo: " + valor + "<br>" + "Indivíduo da geração anterior mais apto a se reproduzir: " + melhorAdaptado
+  + "<br>" + "Gens: " + gens);
 
 
 }
+
 
 // Move the target if the mouse is pressed
 // System will adapt to new target

@@ -23,7 +23,7 @@ class Population {
   live() {
     // Run every rocket
     for (var i = 0; i < this.population.length; i++) {
-      this.population[i].run();
+      this.population[i].run(i);
     }
   }
 
@@ -91,8 +91,10 @@ class Population {
     for (var i = 0; i < this.population.length; i++) {
       if (this.population[i].getFitness() > record) {
         record = this.population[i].getFitness();
+        melhorAdaptado = i;
       }
     }
+
     return record;
   }
 }

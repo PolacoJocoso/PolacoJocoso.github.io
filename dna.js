@@ -42,7 +42,7 @@ class DNA {
       if (random(1) < m) {
         let angle = random(TWO_PI);
         this.genes[i] = p5.Vector.fromAngle(angle);
-        //  TIREI AQUI this.genes[i].mult(random(0, this.maxforce));
+        //this.genes[i].mult(random(0, this.maxforce)); //TIREI AQUI MAS COLOQUEI DE VOLTA
       }
     }
   }
