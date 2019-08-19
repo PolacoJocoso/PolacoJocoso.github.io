@@ -43,8 +43,11 @@
  || navigator.userAgent.match(/BlackBerry/i)
  || navigator.userAgent.match(/Windows Phone/i)
  ){
- 	alert("Este site funciona melhor no computador");
+
+ 	//alert("Este site funciona melhor no computador");
+    checkCookie();
     return true;
+  
   }
  else {
     return false;
@@ -52,6 +55,16 @@
 }
 
 detectmob();
+
+function checkCookie() {
+  var username = getCookie("jaAcessou");
+  if (username == "nao") {
+   alert("Este site funciona melhor no computador");
+   setCookie("username", "sim", 1);
+  }
+  }
+
+
 
   </script>
 
