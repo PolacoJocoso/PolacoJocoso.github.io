@@ -38,13 +38,23 @@ let gens;
 
 let tamAtualPopulacao = 50;
 
+let table;
+
+let mediaFit = 0;
 
 function setup() {
-  var canvasQueCriei = createCanvas(640, 360);
+
+  if(detectaMobile()){
+  	tamX = 320;
+  	tamY = 180;
+  }
+  //var canvasQueCriei = createCanvas(640, 360);
+  var canvasQueCriei = createCanvas(tamX, tamY);
   //var canvasQueCriei = createCanvas(1300, 487);
   canvasQueCriei.position(30, 100);
   // The number of cycles we will allow a generation to live
-  lifetime = height-150;//MUDEI DE 150 PARA 100
+  //lifetime = height-150;//MUDEI DE 150 PARA 100
+  lifetime = height;
 
   // Initialize variables
   lifeCounter = 0;
@@ -55,17 +65,17 @@ function setup() {
   pcMutacao = createP("");
   pcMutacao.position(675, 85);
 
-  sliderMutacao = createSlider(0, 0.5, 0.01, 0.01);
-  sliderMutacao.position(pcMutacao.x+200, pcMutacao.y+22);
-  sliderMutacao.style('background', 'blue');
+  sliderMutacao = createSlider(0, 0.05, 0.001, 0.001);
+  sliderMutacao.position(pcMutacao.x+215, pcMutacao.y+22);
+  //sliderMutacao.style('background', 'blue');
   sliderMutacao.style('width', '60px');
 
   pcQtdInd = createP("");
-  pcQtdInd.position(pcMutacao.x+270, pcMutacao.y);
+  pcQtdInd.position(pcMutacao.x+290, pcMutacao.y);
 
   sliderQtd = createSlider(2, 50, 50, 1);
   sliderQtd.position(sliderMutacao.x+270, sliderMutacao.y);
-  sliderQtd.style('background', 'blue');
+  //sliderQtd.style('background', 'blue');
   sliderQtd.style('width', '90px');
 
 
@@ -96,6 +106,8 @@ function setup() {
   botaoRemove = createButton("Tira");
   botaoRemove.mousePressed(removeIndividuo);
 
+
+
   cores = [];
   for(var z = 0; z < qtdDeFoguetes+100; z++){
     cores[z] = [random(0, 255),random(0, 255),random(0, 255)];
@@ -104,6 +116,30 @@ function setup() {
   //PImage img;
   img = loadImage("logo.png");
 
+  table = new p5.Table();
+
+  table.addColumn('Geracao');
+  table.addColumn('Acertaram o alvo');
+  table.addColumn('Tx. de mutacao');
+  table.addColumn('Qtd. de individuos');
+
+  
+
+  botaoSalvaTabela = createButton("Exportar dados");
+  botaoSalvaTabela.mousePressed(salvaTab);
+
+}
+
+function detectaMobile(){
+	if(displayWidth < 1400){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function salvaTab(){
+	saveTable(table, 'dados_sobre_indivíduos.csv');
 }
 
 function adicionaIndividuo(){
@@ -131,12 +167,30 @@ function draw() {
   if (lifeCounter < lifetime) {
     population.live();
     lifeCounter++;
+
+    if((lifetime - lifeCounter)  <= 50){
+    fill(0, 102, 153);
+    textSize(20);
+    text('Novos indivíduos serão gerados', width/2-150, height/2);
+    }
+
+
+    textSize(10);
     // Otherwise a new generation
   } else {
+
+   let newRow = table.addRow();
+   newRow.setNum('Geracao', population.getGenerations());
+   newRow.setNum('Acertaram o alvo', valor);
+   newRow.setNum('Tx. de mutacao', sliderMutacao.value()*100);
+   newRow.setNum('Qtd. de individuos', sliderQtd.value());
+
+    mediaFit = 0;
     lifeCounter = 0;
     population.fitness();
     population.selection();
     population.reproduction();
+
   }
 
   if(sliderQtd.value() > tamAtualPopulacao){
@@ -155,14 +209,15 @@ function draw() {
   fill(0);
 
   tituloPrincipal.html("Projeto EDVT - Agora vai");
-  pcMutacao.html("Taxa de mutação: " + int(sliderMutacao.value()*100) + "%")
+  pcMutacao.html("Taxa de mutação: " + nf(sliderMutacao.value()*100, 0, 2) + "%");
 
-  pcQtdInd.html("Qtd. de indivíduos: " + sliderQtd.value())
+  pcQtdInd.html("Qtd. de indivíduos: " + sliderQtd.value());
 
 
   info.html("Geração Nº " + population.getGenerations() + "<br>" + "Passos restantes: " + (lifetime - lifeCounter)
   + "<br>" + "Quantos acertaram o alvo: " + valor + "<br>" + "Indivíduo da geração anterior mais apto a se reproduzir: " + melhorAdaptado
-  + "<br>" + "Gens: " + gens + "<br>" + "Tamanho display: " + displayWidth + " " + displayHeight);
+  + "<br>" + "Gens: " + gens + "<br>" + "Tamanho display: " + displayWidth + " " + displayHeight + 
+  "<br>" + "Aptidão média da geração anterior: " + mediaFit);
 
 
 }
