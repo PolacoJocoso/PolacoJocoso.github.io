@@ -217,7 +217,7 @@ function draw() {
   info.html("Geração Nº " + population.getGenerations() + "<br>" + "Passos restantes: " + (lifetime - lifeCounter)
   + "<br>" + "Quantos acertaram o alvo: " + valor + "<br>" + "Indivíduo da geração anterior mais apto a se reproduzir: " + melhorAdaptado
   + "<br>" + "Gens: " + gens + "<br>" + "Tamanho display: " + displayWidth + " " + displayHeight + 
-  "<br>" + "Aptidão média da geração anterior: " + mediaFit);
+  "<br>" + "Aptidão média da geração anterior: " + mediaFit + "<br>" + "Frame rate: " + frameRate());
 
 
 }
