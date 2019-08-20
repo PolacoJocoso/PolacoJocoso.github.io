@@ -12,13 +12,28 @@ class Population {
     this.mutationRate = m; // Mutation rate
     this.population = []; // Array to hold the current population
     this.matingPool = []; // ArrayList which we will use for our "mating pool"
+
+    this.IdentMatingPool = [];
+
     this.generations = 0; // Number of generations
     //make a new set of creatures
     for (var i = 0; i < num; i++) {
-      var location = createVector(width / 2, height + 20);
+      var location = createVector(width / 2, height-30);
       this.population[i] = new Rocket(location, new DNA());
     }
   }
+
+  criaMaisUm(){
+  	var location = createVector(width / 2, height -30);
+    this.population.push( new Rocket(location, new DNA()));
+    tamAtualPopulacao++;
+  }
+
+  mataUm(){
+  	this.population.splice(this.population.length-1, 1);
+  	tamAtualPopulacao--;
+  }
+
 
   live() {
     // Run every rocket
@@ -52,6 +67,8 @@ class Population {
 
       for (var j = 0; j < n; j++) {
         this.matingPool.push(this.population[i]);
+        this.IdentMatingPool.push(i);
+
       }
     }
   }
@@ -66,7 +83,21 @@ class Population {
       var d = floor(random(this.matingPool.length));
       // Pick two parents
       var mom = this.matingPool[m];
-      var dad = this.matingPool[d];
+      //var dad = this.matingPool[d];
+
+      /*if(this.IdentMatingPool[m] != this.IdentMatingPool[d]){
+      	var dad = this.matingPool[d];
+  	  }else{
+  	  	print("Rolou partenogenese");
+  	  	var dad = this.matingPool[d];
+  	  }*/
+
+  	  while(this.IdentMatingPool[m] == this.IdentMatingPool[d]){
+  	     var d = floor(random(this.matingPool.length));
+  	     //print("Rolou partenogenese");
+  	  }
+  	  var dad = this.matingPool[d];
+
       // Get their genes
       var momgenes = mom.getDNA();
       var dadgenes = dad.getDNA();
@@ -75,7 +106,7 @@ class Population {
       // Mutate their genes
       child.mutate(sliderMutacao.value());
       // Fill the new population with the new child
-      var location = createVector(width / 2, height + 20);
+      var location = createVector(width / 2, height -30);
       this.population[i] = new Rocket(location, child);
     }
     this.generations++;

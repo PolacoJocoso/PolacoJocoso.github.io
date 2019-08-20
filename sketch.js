@@ -36,6 +36,9 @@ let mutationRate = 0.01;
 
 let gens;
 
+let tamAtualPopulacao = 50;
+
+
 function setup() {
   var canvasQueCriei = createCanvas(640, 360);
   //var canvasQueCriei = createCanvas(1300, 487);
@@ -52,12 +55,19 @@ function setup() {
   pcMutacao = createP("");
   pcMutacao.position(675, 85);
 
-  sliderMutacao = createSlider(0.01, 1, 0.01, 0.01);
-  sliderMutacao.position(pcMutacao.x+219, pcMutacao.y+19);
+  sliderMutacao = createSlider(0, 0.5, 0.01, 0.01);
+  sliderMutacao.position(pcMutacao.x+200, pcMutacao.y+22);
   sliderMutacao.style('background', 'blue');
+  sliderMutacao.style('width', '60px');
 
-  //sliderQtd = createSlider(2, 50, 20, 1);
-  //sliderQtd.position(pcMutacao.x+280, pcMutacao.y+19);
+  pcQtdInd = createP("");
+  pcQtdInd.position(pcMutacao.x+270, pcMutacao.y);
+
+  sliderQtd = createSlider(2, 50, 50, 1);
+  sliderQtd.position(sliderMutacao.x+270, sliderMutacao.y);
+  sliderQtd.style('background', 'blue');
+  sliderQtd.style('width', '90px');
+
 
   // Create a population with a mutation rate, and population max
   mutationRate = sliderMutacao.value();
@@ -80,21 +90,38 @@ function setup() {
   video.position(675,145);
 
 
-  botao = createButton("bai");
-  botao.mousePressed();
+  botao = createButton("Adiciona");
+  botao.mousePressed(adicionaIndividuo);
+
+  botaoRemove = createButton("Tira");
+  botaoRemove.mousePressed(removeIndividuo);
 
   cores = [];
-  for(var z = 0; z < qtdDeFoguetes; z++){
+  for(var z = 0; z < qtdDeFoguetes+100; z++){
     cores[z] = [random(0, 255),random(0, 255),random(0, 255)];
-
   }
+ 
+  //PImage img;
+  img = loadImage("logo.png");
 
 }
 
+function adicionaIndividuo(){
+	population.criaMaisUm();
+}
+
+function removeIndividuo(){
+	population.mataUm();
+}
+
+
 function draw() {
-  //background(180);
+
   clear();
-  // Draw the start and target positions
+  background(189, 123, 212);
+  //image(img, 0, 0);
+
+
   fill('red');
   stroke(0);
   ellipse(target.x, target.y, 24, 24);
@@ -112,15 +139,30 @@ function draw() {
     population.reproduction();
   }
 
+  if(sliderQtd.value() > tamAtualPopulacao){
+  	for(var i = 0; (sliderQtd.value() - tamAtualPopulacao) != 0; i++){
+  		population.criaMaisUm();
+  	}
+  }else if(tamAtualPopulacao > sliderQtd.value()){
+  	for(var i = 0; (tamAtualPopulacao - sliderQtd.value()) != 0; i++){
+  		population.mataUm();
+  	}
+
+  }
+
+
   // Display some info
   fill(0);
 
   tituloPrincipal.html("Projeto EDVT - Agora vai");
   pcMutacao.html("Taxa de mutação: " + int(sliderMutacao.value()*100) + "%")
 
+  pcQtdInd.html("Qtd. de indivíduos: " + sliderQtd.value())
+
+
   info.html("Geração Nº " + population.getGenerations() + "<br>" + "Passos restantes: " + (lifetime - lifeCounter)
   + "<br>" + "Quantos acertaram o alvo: " + valor + "<br>" + "Indivíduo da geração anterior mais apto a se reproduzir: " + melhorAdaptado
-  + "<br>" + "Gens: " + gens);
+  + "<br>" + "Gens: " + gens + "<br>" + "Tamanho display: " + displayWidth + " " + displayHeight);
 
 
 }

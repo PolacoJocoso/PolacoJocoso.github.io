@@ -38,6 +38,7 @@ class DNA {
 
   // Based on a mutation probability, picks a new random Vector
   mutate(m) {
+  	if(mutationRate != 0){
     for (let i = 0; i < this.genes.length; i++) {
       if (random(1) < m) {
         let angle = random(TWO_PI);
@@ -46,4 +47,6 @@ class DNA {
       }
     }
   }
+
+}
 }
